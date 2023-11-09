@@ -1,6 +1,5 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import fastifyJwt from "@fastify/jwt"
-import { FastifyZod } from "fastify-zod";
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import { authSchema } from "./modules/authentication/authentication.schema";
@@ -152,3 +151,6 @@ async function main(){
 
 
 main()
+
+
+export default server
