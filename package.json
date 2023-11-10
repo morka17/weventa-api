@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "tsc && node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "vercel-build": "echo hello"
