@@ -2,9 +2,10 @@
   "name": "weventa",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
+    "build": "tsc",
+    "start": "ts-node && node src/index.js",
     "dev": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "vercel-build": "echo hello"
