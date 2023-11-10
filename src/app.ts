@@ -4,7 +4,6 @@ import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import { authSchema } from "./modules/authentication/authentication.schema";
 import authRoutes from "./modules/authentication/authentication.route";
-// import api from "api"
 import { env } from "./config/env";
 import { User } from "./utils/user.util";
 import { productRoute } from "./modules/product/product.route";
@@ -149,9 +148,6 @@ async function main(){
         process.exit(-1)
     }
 }
-
-
-
 
 main()
 
