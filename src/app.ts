@@ -138,7 +138,7 @@ async function main(){
 
 
     try{
-        await server.listen(3000, "0.0.0.0")
+        await server.listen({port: 3000, host:"0.0.0.0"})
         server.swagger()
 
         console.log("Swagger UI started on port 3000")
@@ -150,6 +150,5 @@ async function main(){
 }
 
 main()
-
 
 export default server
