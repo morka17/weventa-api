@@ -8,3 +8,9 @@ prisma-init:
 
 generate:
 	npx prisma generate
+
+run:
+	nodemon dist/bundle.js
+
+webpack:
+	npx webpack

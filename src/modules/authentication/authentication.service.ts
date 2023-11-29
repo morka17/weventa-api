@@ -1,8 +1,7 @@
-import {randomInt} from "crypto"
-
+import { generateRandomOTP } from "../../utils/jwt.util";
 import { hashPassword } from "../../utils/hash";
 import prisma from "../../utils/prisma.util";
-import { CreateUserInput, UserIdParamInput, VerifyCodeInput } from "./authentication.schema";
+import { CreateUserInput } from "./authentication.schema";
 
 
 
@@ -105,13 +104,15 @@ export async function findUsers(){
 // ====> Create 
 export  async function createVerificationSession(email: string){
     const now = new Date()
+    console.log(generateRandomOTP())
 
     const data = {
         email: email, 
-        code: randomInt(6), 
+        code: generateRandomOTP(), 
         expireAt: new Date(now.setMinutes(now.getMinutes() + 15))  // 15 Minutes 
-     }
-   const session = await  prisma.verificationSession.create({
+    }
+
+    const session = await  prisma.verificationSession.create({
         data: data
     })
 
@@ -123,7 +124,7 @@ export async function updateVerificationSession(email: string){
     const now = new Date()
     const data = {
         email: email, 
-        code: randomInt(6), 
+        code: generateRandomOTP(), 
         expireAt: new Date(now.setMinutes(now.getMinutes() + 15))  // 15 Minutes 
      }
 
@@ -135,12 +136,11 @@ export async function updateVerificationSession(email: string){
     return session
     
 }
+
 export async function findVerificationSession(email: string){
-    
     const session = await prisma.verificationSession.findFirst({
         where: {email}
     })
 
     return session 
-
 }

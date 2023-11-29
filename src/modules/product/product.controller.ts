@@ -103,17 +103,17 @@ export async function updateProductHandler(request: FastifyRequest<{
 }
 export async function getProductHandler(request: FastifyRequest<{
     Params: ProductIdInput 
-    Body: Object
 }>, reply: FastifyReply){
 
     const params = request.params
     if (!params.productId){
-        return reply.code(403).send({error: true, msg:"Vendor id is required"})
+        return reply.code(403).send({error: true, msg: "id is required"})
     }
 
     try{
-        const product = await findProduct({id: params.productId})
-        return reply.code(200).send(product)
+        const products = await findProduct({id: Number(params.productId)})
+        if (products.length <= 0) return reply.code(404).send({error: true, msg: "Product not found"})
+        return reply.code(200).send(products[0])
     }catch(e){
         return reply.code(500).send({error: true, msg: e})
     }

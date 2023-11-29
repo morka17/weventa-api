@@ -75,4 +75,4 @@ const productModels = {
     productsSchema,
 }
 
-export const {schemas: productSchema, $ref} = buildJsonSchemas<typeof productModels>(productModels, {$id: "productSchema"})
+export const {schemas: productSchema, $ref} = buildJsonSchemas<typeof productModels>(productModels,  {$id: "productSchema"})

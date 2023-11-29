@@ -33,7 +33,7 @@ export async function searchProductsWithNLP(searchQuery: string){
 
     const products = prisma.product.findMany({
         where: {
-            AND: keywords.map(keyword => ({
+            OR: keywords.map(keyword => ({
                 name: {
                     search: keyword
                 }, 

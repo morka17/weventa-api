@@ -42,12 +42,12 @@ export async function productRoute(server: FastifyInstance){
     getVendorPhysicalProductsHandler
     )
 
-    server.get("/search", 
+    server.get("/search/", 
     {schema: {querystring: $ref("searchProductSchema"), response: {200: $ref("productsSchema")}}}, 
     searchProductsHandler
     )
 
-    server.get("/searchWithNLP", 
+    server.get("/searchWithNLP/", 
     {schema: {querystring: $ref("searchProductSchema"), response: {200: $ref("productsSchema")}}}, 
     searchProductsWithNLPHandler
     )

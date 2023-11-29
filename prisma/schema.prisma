@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
@@ -20,34 +20,96 @@ model User {
   gender    String?
   aboutme   String?
   photoURL  String?
-  verified  Boolean    @default(false)
+  verified  Boolean   @default(false)
   userType  String
   password  String
   salt      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
+  addresses Address[]
   products  Product[]
+  contacts  Contact[]
+  reviews   Review[]
+  sales     Sale[]
+  carts     Cart[]
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  name          String    @db.VarChar(255)
-  description   String?   @db.VarChar(255)
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(255)
+  description   String?  @db.VarChar(255)
   imageURL      String[]
   downloadURL   String?
   productType   String
   totalPrice    Float
   discountPrice Float
-  owner         User      @relation(fields: [ownerId], references: [id])
+  owner         User     @relation(fields: [ownerId], references: [id])
   ownerId       Int
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  earning   Float
+  productId Int
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+}
+
+model VerificationSession {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  code     Int
+  expireAt DateTime
+}
+
+model Review {
+  id        Int    @id @default(autoincrement())
+  user      User   @relation(fields: [userId], references: [id])
+  userId    Int
+  productId Int
+  content   String @db.VarChar(255)
+  rating    Float
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId    Int
+  streetLine String   @db.VarChar(255)
+  city       String   @db.VarChar(255)
+  state      String   @db.VarChar(255)
+  country    String   @db.VarChar(255)
+  default    Boolean
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Contact {
+  id          Int      @id @default(autoincrement())
+  owner       User     @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  phoneNumber String   @db.VarChar(255)
+  facebook    String   @db.VarChar(255)
+  instagram   String   @db.VarChar(255)
+  linkedIn    String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
-model VerificationSession {
-  id Int @id @default(autoincrement())
-  email String @unique
-  code Int 
-  expireAt DateTime 
+model AffiliateLink {
+ id        Int      @id @default(autoincrement())
+ 
 }

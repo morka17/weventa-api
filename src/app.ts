@@ -127,7 +127,7 @@ async function main(){
         requestProperty: "user", 
         scopeProperty: "userType",
         errorHandler: (result, request, reply) => {
-            return reply.send("Unauthorized to perform this action")
+            return reply.send({error: true, msg:"Unauthorized to perform this action"})
         }
     })
     

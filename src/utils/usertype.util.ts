@@ -7,6 +7,6 @@ export const ALL_USERTYPE = [
 
 
 export const ALL_PRODUCT_TYPE = [
-    "phyical", 
+    "physical", 
     "digital",
 ] as const 
