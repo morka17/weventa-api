@@ -4,15 +4,15 @@ import {z} from "zod"
 
   
 const createReviewSchema = z.object({
-    productId: z.string({required_error: "Product id required"}),
+    productId: z.number({required_error: "Product id required"}),
     content: z.string({required_error: "write a review comment"}), 
     rating: z.number({required_error:"rating value is required"})
 })
 
 
 const reviewResponseSchema = z.object({
-    ownerId: z.number(),
-    productId: z.string({required_error: "Product id required"}),
+    userId: z.number(),
+    productId: z.number({required_error: "Product id required"}),
     content: z.string({required_error: "write a review comment"}), 
     rating: z.number({required_error:"rating value is required"}),
     createdAt: z.date(), 

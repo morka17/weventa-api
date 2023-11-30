@@ -51,8 +51,10 @@ model Product {
 
 model Sale {
   id        Int      @id @default(autoincrement())
-  date      DateTime
+  date      DateTime @default(now())
+  price     Float
   earning   Float
+  buyerId   Int 
   productId Int
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   Int
@@ -114,7 +116,7 @@ model AffiliateLink {
   id        Int      @id @default(autoincrement())
   link      Int
   productId Int
-  ownerId     Int
+  ownerId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

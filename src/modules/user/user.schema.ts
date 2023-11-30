@@ -1,6 +1,6 @@
 import { buildJsonSchemas } from "fastify-zod";
+import { ALL_USERTYPE } from "src/utils/usertype.util";
 import {z} from "zod"
-
 
 
 // Address 
@@ -18,7 +18,8 @@ const createAddressSchema = z.object({
 const addressResponseSchema = z.object({
    id: z.number(), 
    ...addressCore, 
-   createdAt: z.date(), 
+   ownerId: z.number(),
+    createdAt: z.date(), 
     updatedAt: z.date()
 }) 
 
@@ -54,7 +55,7 @@ const contactIdSchema = z.object({
 
 // Carts 
 const cartCore = {
-    productId: z.string({required_error: "product id required"}),
+    productId: z.number({required_error: "product id required"}),
 }
 
 const createcartSchema = z.object({
@@ -74,6 +75,35 @@ const cartResponseSchema = z.object({
 
 const cartIdSchema = z.object({
     cartId: z.number()
+})
+
+// User 
+const userCore = { 
+    email: z.string({
+        required_error: "Email is required", 
+        invalid_type_error: "Email must be a string",
+    }).email(),
+    firstName: z.string({required_error: "First name is required"}),
+    lastName: z.string({required_error: "Last name is required"}),
+    aboutme: z.string(),
+    username: z.string(), 
+    gender: z.string(), 
+    photoURL: z.string(), 
+    userType: z.enum(ALL_USERTYPE),
+}
+
+const userDetailSchema = z.object({
+    id: z.number(), 
+    ...userCore,
+    contact: contactResponseSchema, 
+    addresses: z.array(addressResponseSchema),
+    createdAt: z.date(), 
+    updatedAt: z.date()
+})
+
+
+const userDetailIdSchema = z.object({
+    userId: z.number()
 })
 
 
@@ -114,6 +144,7 @@ export type CreateCartIput = z.infer<typeof createcartSchema>
 export type CartIdInput = z.infer<typeof cartIdSchema>
 export type CreateAffLinkInput = z.infer<typeof createAffLinkSchema>
 export type AffLinkIdInput = z.infer<typeof affLinkIdSchema>
+export type UserDetailIdSchema = z.infer<typeof userDetailIdSchema>
 
 
 
@@ -134,6 +165,7 @@ const userModels = {
     affLinkIdSchema: affLinkIdSchema, 
     affLinkResponseSchema: affLinkResponseSchema, 
     affLinksResponseSchema: affLinksResponseSchema, 
+    userDetailSchema: userDetailSchema,
 }
 
 export const {schemas: userSchema, $ref} = buildJsonSchemas<typeof userModels>(userModels, {$id: "userModels"})
