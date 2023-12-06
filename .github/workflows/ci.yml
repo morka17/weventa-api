@@ -31,6 +31,6 @@ jobs:
     - name: Generate prisma client 
       run: npx prisma generate
     - name: Run migration 
-      run: npx prisma migrate dev --name init  
+      run: npx prisma migrate deploy --force --name init  
     - run: yarn build 
     - run: yarn start 
