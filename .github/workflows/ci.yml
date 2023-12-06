@@ -27,4 +27,4 @@ jobs:
     - run: npm install
     - run: |
         touch .env 
-        echo ${{ secrets.PROD_ENV_FILE }} > .env 
+        echo "${{ secrets.PROD_ENV_FILE }}" > .env 
