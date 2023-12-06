@@ -49,7 +49,7 @@ const contactResponseSchema = z.object({
 })
 
 const contactIdSchema = z.object({
-    addressId: z.number()
+    contactId: z.number()
 })
 
 
@@ -67,11 +67,15 @@ const cartResponseSchema = z.object({
     ...contactCore, 
     name: z.string(), 
     description: z.string(),
+    quanity: z.number(), 
     price: z.number(),
+    totalPrice:z.number(),
     rating: z.number(),
     createdAt: z.date(), 
     updatedAt: z.date()
 })
+
+const cartReponsesSchema = z.array(cartResponseSchema)
 
 const cartIdSchema = z.object({
     cartId: z.number()
@@ -109,21 +113,15 @@ const userDetailIdSchema = z.object({
 
 // Affiliate LINK
 const affLinkCore = { 
-    productId: z.string({required_error: "product id required"}),
+    productId: z.number({required_error: "product id required"}),
 }
 
 const createAffLinkSchema = z.object({
     ...affLinkCore,  
-
-
 })
 
 const affLinkResponseSchema = z.object({
-    Id: z.number(),
-    ...affLinkCore, 
-    ownerId: z.number(), 
-    createdAt: z.date(), 
-    updatedAt: z.date()
+    link: z.string()
 })
 const affLinksResponseSchema = z.array(affLinkResponseSchema)
 
@@ -132,6 +130,10 @@ const affLinkIdSchema = z.object({
 })
 
 
+const msg = z.object({
+    error: z.boolean(), 
+    msg: z.string()
+})
 
 const updateSchema = z.object({})
 
@@ -166,6 +168,8 @@ const userModels = {
     affLinkResponseSchema: affLinkResponseSchema, 
     affLinksResponseSchema: affLinksResponseSchema, 
     userDetailSchema: userDetailSchema,
+    msg: msg, 
+    cartReponsesSchema: cartReponsesSchema
 }
 
 export const {schemas: userSchema, $ref} = buildJsonSchemas<typeof userModels>(userModels, {$id: "userModels"})

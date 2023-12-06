@@ -12,41 +12,46 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String    @unique
-  username  String?
-  gender    String?
-  aboutme   String?
-  photoURL  String?
-  verified  Boolean   @default(false)
-  userType  String
-  password  String
-  salt      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  addresses Address[]
-  products  Product[]
-  contacts  Contact[]
-  reviews   Review[]
-  sales     Sale[]
-  carts     Cart[]
+  id             Int             @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  email          String          @unique
+  username       String?
+  gender         String?
+  aboutme        String?
+  photoURL       String?
+  verified       Boolean         @default(false)
+  userType       String
+  password       String
+  salt           String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
+  addresses      Address[]
+  products       Product[]
+  contacts       Contact[]
+  reviews        Review[]
+  affiliateLinks AffiliateLink[]
+  sales          Sale[]
+  carts          Cart[]
 }
 
 model Product {
-  id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(255)
-  description   String?  @db.VarChar(255)
-  imageURL      String[]
-  downloadURL   String?
-  productType   String
-  totalPrice    Float
-  discountPrice Float
-  owner         User     @relation(fields: [ownerId], references: [id])
-  ownerId       Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(255)
+  description       String?             @db.VarChar(255)
+  imageURL          String[]
+  downloadURL       String?
+  productType       String
+  price             Float
+  discountPrice     Float
+  commission        Float               @default(0.00)
+  owner             User                @relation(fields: [ownerId], references: [id])
+  ownerId           Int
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  cart              Cart[]
+  affilatePurchases AffiliatePurchase[]
+  AffiliateLink     AffiliateLink[]
 }
 
 model Sale {
@@ -54,7 +59,7 @@ model Sale {
   date      DateTime @default(now())
   price     Float
   earning   Float
-  buyerId   Int 
+  buyerId   Int
   productId Int
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   Int
@@ -107,16 +112,29 @@ model Cart {
   id        Int      @id @default(autoincrement())
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   Int
+  product   Product  @relation(fields: [productId], references: [id])
   productId Int
+  quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model AffiliateLink {
-  id        Int      @id @default(autoincrement())
-  link      Int
+  id                Int                 @id @default(autoincrement())
+  userId            Int
+  user              User                @relation(fields: [userId], references: [id])
+  productId         Int
+  product           Product             @relation(fields: [productId], references: [id])
+  createdAt         DateTime            @default(now())
+  AffiliatePurchase AffiliatePurchase[]
+}
+
+model AffiliatePurchase {
+  id        Int           @id @default(autoincrement())
+  linkId    Int
+  link      AffiliateLink @relation(fields: [linkId], references: [id])
   productId Int
-  ownerId   Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  product   Product       @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime      @default(now())
 }

@@ -14,8 +14,11 @@ const productCore = {
     imageURL: z.array(z.string()),
     downloadURL: z.string(),
     productType: z.enum(ALL_PRODUCT_TYPE), 
-    totalPrice: z.number({
+    price: z.number({
         required_error: "Product price is required",
+    }),
+    commission: z.number({
+        required_error: "Product commission price is required",
     }), 
     discountPrice: z.number({
         required_error: "Product discount price is required",
