@@ -33,4 +33,4 @@ jobs:
     - name: Run migration 
       run: npx prisma migrate dev --name init 
     - run: yarn build 
-    - run: yarn start 
+    - run: pm2 start index.js 
