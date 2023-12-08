@@ -27,7 +27,7 @@ jobs:
     - run: npm install
     - run: |
         touch .env 
-        echo "$( secrets.PROD_ENV_FILE )" >> .env
+        echo "$(cat secrets.PROD_ENV_FILE )" >> .env
     - name: Generate prisma client 
       run: npx prisma generate
     - name: Run migration 
