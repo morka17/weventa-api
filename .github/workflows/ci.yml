@@ -27,10 +27,12 @@ jobs:
     - run: npm install
     - run: |
         touch .env 
-        echo "${{ secrets.PROD_ENV_FILE }}" > .env 
+        echo "${{ secrets.PROD_ENV_FILE }}" > .env
+        cat .env 
     - name: Generate prisma client 
       run: npx prisma generate
     - name: Run migration 
       run: npx prisma migrate dev --name init 
-    - run: yarn build 
-    - run: pm2 start src/app.js 
+    - name: Build javascript 
+      run: tsc 
+    - run: pm2 restart src/app.js --name=WeventaAPI 
