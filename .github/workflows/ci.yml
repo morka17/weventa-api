@@ -27,11 +27,11 @@ jobs:
     - run: npm install
     - run: |
         touch .env 
-        echo "${{ secrets.PROD_ENV_FILE }}" > .env
+        echo "${{ secrets.PROD_ENV_FILE }}" >> .env
     - name: Generate prisma client 
       run: npx prisma generate
     - name: Run migration 
       run: npx prisma migrate dev --name init 
     - name: Build javascript 
       run: tsc 
-    # - run: pm2 restart src/app.js 
+    - run: pm2 restart src/app.js 
