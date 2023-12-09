@@ -34,4 +34,4 @@ jobs:
       run: npx prisma migrate dev --name init 
     - name: Build javascript 
       run: tsc 
-    - run: pm2 restart src/app.js 
+    - run: pm2 restart src/app.js --name=weventaAPI
