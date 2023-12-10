@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.5.2",
     "@types/jsonwebtoken": "^9.0.4",
     "fastify": "^4.24.3",
     "fastify-guard": "^2.0.0",

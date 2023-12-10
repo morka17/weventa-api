@@ -81,10 +81,6 @@ server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyRe
     }
 });
 
-server.get("/healthcheck", async function(){
-    return {status:"OK"}
-})
-
 
 async function main(){
 
@@ -114,13 +110,10 @@ async function main(){
         }
     })
 
-    server.register(fastifySwaggerUi, {
-        routePrefix: "/docs", 
-        uiConfig: {
-            docExpansion: "full", 
-            deepLinking: false
-        }
+    server.get("/api/v1/healthcheck", async function(){
+        return {status:"OK"}
     })
+
 
     // Guard 
     server.register(fastifyGuard, {
@@ -130,12 +123,21 @@ async function main(){
             return reply.send({error: true, msg:"Unauthorized to perform this action"})
         }
     })
+
+    // Register swaggerUI routes 
+    server.register(fastifySwaggerUi, {
+        routePrefix: "/api/v1/docs", 
+        uiConfig: {
+            docExpansion: "full", 
+            deepLinking: false
+        }
+    })
     
 
     // Register routes 
     server.register(authRoutes, {prefix: "/api/v1/auth"})
     server.register(productRoute, {prefix: "/api/v1/product"})
-
+    
 
     try{
         await server.listen({port: 3000, host:"0.0.0.0"})
