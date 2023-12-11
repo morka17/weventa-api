@@ -35,4 +35,4 @@ jobs:
     - name: Build javascript 
       run: tsc 
     - name: start server 
-      run: pm2 start src/app.js --name=weventaAPI 
+      run: pm2 restart src/app.js --name=weventaAPI 

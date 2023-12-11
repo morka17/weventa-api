@@ -126,6 +126,7 @@ async function main(){
 
     // Register swaggerUI routes 
     server.register(fastifySwaggerUi, {
+        
         routePrefix: "/api/v1/docs", 
         uiConfig: {
             docExpansion: "full", 
