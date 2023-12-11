@@ -2,7 +2,7 @@
 export const ALL_USERTYPE = [
     "default", 
     "vendor", 
-    "affilate"
+    "affiliate"
 ] as const 
 
 
