@@ -1,4 +1,4 @@
-import { env } from "src/config/env";
+import { env } from "../../../src/config/env";
 import prisma from "../../utils/prisma.util";
 import { ContactsInput, CreateAddressInput, CreateAffLinkInput, CreateCartIput, UpdateInput } from "./user.schema";
 
@@ -84,13 +84,14 @@ export async function createCart(data: CreateCartIput & { ownerId: number, quant
                         name: true,
                         description: true,
                         price: true,
-    
+
                     }
                 }
             }
 
         });
-    return cart
+    return { ...cart, totalPrice: cart.quantity * cart.product.price }
+
 }
 
 
@@ -109,7 +110,13 @@ export async function findCart(query: any) {
         }
     })
 
-    return carts
+    const items: any = [];
+
+    carts.forEach(item => {
+        items.push({ ...item, totalPrice: item.quantity * item.product.price })
+    })
+
+    return items
 }
 
 export async function updateCart(query: any, data: UpdateInput) {
@@ -127,7 +134,7 @@ export async function updateCart(query: any, data: UpdateInput) {
             }
         }
     })
-    return cart
+    return { ...cart, totalPrice: cart.quantity * cart.product.price }
 }
 
 export async function deleteCartById(userId: number, id: number,) {
@@ -143,17 +150,12 @@ export async function deleteCartById(userId: number, id: number,) {
 
 export async function findUser(query: any) {
     const users = await prisma.user.findMany({
-        where: query, 
-        select: {
-            id: true,
-            firstName: true, 
-            lastName: true,
-            username: true, 
-            userType: true, 
-            gender: true, 
-            aboutme: true,
-            email: true, 
-        }
+        where: query,
+        include: {
+            contacts: true,
+            addresses: true,
+        
+        }, 
     })
 
     return users
@@ -163,16 +165,7 @@ export async function updateUser(query: any, data: UpdateInput) {
     const user = await prisma.user.update({
         where: query,
         data,
-        select: {
-            id: true,
-            firstName: true, 
-            lastName: true,
-            username: true, 
-            userType: true, 
-            gender: true, 
-            aboutme: true,
-            email: true, 
-        }
+
     })
     return user
 }
@@ -190,7 +183,7 @@ export async function deleteUserById(id: number) {
 // ====================  AFFILIATE ===========================
 
 
-export async function generateAffiliateLink(data: CreateAffLinkInput &{ userId: number}) {
+export async function generateAffiliateLink(data: CreateAffLinkInput & { userId: number }) {
     const link = await prisma.affiliateLink.create({
         data: data,
         include: {
@@ -202,35 +195,36 @@ export async function generateAffiliateLink(data: CreateAffLinkInput &{ userId: 
         }
     })
 
-    return `http://${env.HOST_NAME}/${link.product.name}/${link.id}`
+    return link.id
+    // return `http://${env.HOST_NAME}/${link.product.name}/${link.id}`
 }
 
 
 // TODO: MOVE TO THE PAYMENT FEATURE
-export async function trackAffiliatePurchase(linkId: number, productId: number, quantity: number): Promise<void>{
+export async function trackAffiliatePurchase(linkId: number, productId: number, quantity: number): Promise<void> {
     await prisma.affiliatePurchase.create({
-        data: 
+        data:
         {
-            linkId, 
-            productId, 
-            quantity, 
+            linkId,
+            productId,
+            quantity,
         }
     })
 }
 
-export async function getAffiliateLinks(userId: number){
-  const links =  await prisma.affiliateLink.findMany({
-        where: {userId: userId}, 
+export async function getAffiliateLinks(query: any ) {
+    const links = await prisma.affiliateLink.findMany({
+        where: query,
         include: {
             product: {
-                select:{
+                select: {
                     name: true,
                 }
-            }, 
-            AffiliatePurchase: true, 
+            },
+            AffiliatePurchase: true,
         }
     })
 
-    return links 
+    return links
 }
 

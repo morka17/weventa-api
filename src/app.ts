@@ -11,6 +11,8 @@ import { productSchema } from "./modules/product/product.schema";
 import fastifyGuard from "fastify-guard";
 import { userSchema } from "./modules/user/user.schema";
 import userRoutes from "./modules/user/user.route";
+import { reviewSchema } from "./modules/review/review.schema";
+import reviewRoutes from "./modules/review/review.route";
 
 
 
@@ -91,7 +93,7 @@ async function main(){
     
 
     // Add schemas 
-    for (const schema of [...authSchema, ...productSchema, ...userSchema] ){
+    for (const schema of [...authSchema, ...productSchema, ...userSchema, ...reviewSchema] ){
         server.addSchema(schema)
     }
    
@@ -141,6 +143,7 @@ async function main(){
     server.register(authRoutes, {prefix: "/api/v1/auth"})
     server.register(productRoute, {prefix: "/api/v1/product"})
     server.register(userRoutes, {prefix: "/api/v1/user"})
+    server.register(reviewRoutes, {prefix: "/api/v1/review"})
     
 
     try{

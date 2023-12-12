@@ -36,7 +36,7 @@ export async function updateReviewHandler(request: FastifyRequest<{
     const user = request.user as User
 
     try{
-        const result = await findOneReview(params.reviewId)
+        const result = await findOneReview({id: params.reviewId})
         if (!result){
             return reply.code(404).send({error: true, msg: "Review not found"})
         } 
@@ -48,7 +48,7 @@ export async function updateReviewHandler(request: FastifyRequest<{
         return reply.code(200).send(review);
     }catch(e){
         console.log(e)
-        return reply.code(500).send(e)
+        return reply.code(500).send({error: true, msg: e})
     }
 }
 
@@ -69,10 +69,9 @@ export async function deleteReviewHandler(request: FastifyRequest<{
             return reply.code(403).send({error: true, msg:"Unauthorized"})
         }
         const res = await deleteReviewById(params.reviewId)
-        return reply.code(200).send(res)
+        return reply.code(200).send({error: false, msg:"Deleted successfully!"})
     }catch(e){
-        console.log(e)
-        return reply.code(500).send(e)
+        return reply.code(500).send({error: true, msg: "Failed to delete review"})
     }
 }
 
@@ -84,7 +83,7 @@ export async function getReviewHandler(request: FastifyRequest<{
     const params = request.params
 
     try{
-        const res = await findOneReview(params.reviewId)
+        const res = await findOneReview({id:params.reviewId})
         return reply.code(200).send(res)
     }catch(e){
         console.log(e)
@@ -96,10 +95,10 @@ export async function getReviewsHandler(request: FastifyRequest<{
     
 }>, reply: FastifyReply){
 
-    const params = request.params
+    const user = request.user as User
 
     try{
-        const res = await findReview({})
+        const res = await findReview({userId: user.id})
         return reply.code(200).send(res)
     }catch(e){
         console.log(e)

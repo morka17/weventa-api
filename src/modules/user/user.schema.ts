@@ -1,5 +1,5 @@
 import { buildJsonSchemas } from "fastify-zod";
-import { ALL_USERTYPE } from "src/utils/usertype.util";
+import { ALL_USERTYPE } from "./../../utils/usertype.util";
 import {z} from "zod"
 
 
@@ -62,15 +62,18 @@ const createcartSchema = z.object({
     ...cartCore, 
 })
 
+const cartProductInfo = z.object({
+    name: z.string(),
+    description: z.string(),
+    price: z.number()
+})
+
 const cartResponseSchema = z.object({
     id: z.number(),
-    ...contactCore, 
-    name: z.string(), 
-    description: z.string(),
-    quanity: z.number(), 
-    price: z.number(),
+    ...cartCore, 
+    product: cartProductInfo,
+    quantity: z.number(), 
     totalPrice:z.number(),
-    rating: z.number(),
     createdAt: z.date(), 
     updatedAt: z.date()
 })
@@ -96,10 +99,12 @@ const userCore = {
     userType: z.enum(ALL_USERTYPE),
 }
 
+const userInfo = z.object({...userCore})
+
 const userDetailSchema = z.object({
     id: z.number(), 
     ...userCore,
-    contact: contactResponseSchema, 
+    contacts: z.array(contactResponseSchema), 
     addresses: z.array(addressResponseSchema),
     createdAt: z.date(), 
     updatedAt: z.date()
@@ -123,6 +128,29 @@ const createAffLinkSchema = z.object({
 const affLinkResponseSchema = z.object({
     link: z.string()
 })
+
+
+
+const  getLinkResponse = z.object({
+   
+    id: z.number(),
+    userId: z.number(),
+    productId: z.number(),
+    product: z.object({
+        name: z.string(),
+    }),
+    AffiliatePurchase: z.array(z.object({
+        id: z.number(),
+        linkId: z.number(),
+        productId: z.number(),
+        quantity: z.number(),
+        createdAt: z.date(),
+    })),
+    createdAt: z.date(),
+})
+
+const getLinksResponse = z.array(getLinkResponse)
+
 const affLinksResponseSchema = z.array(affLinkResponseSchema)
 
 const affLinkIdSchema = z.object({
@@ -135,6 +163,8 @@ const msg = z.object({
     msg: z.string()
 })
 
+
+const userIdSchema = z.object({userId: z.string()})
 const updateSchema = z.object({})
 
 export type CreateAddressInput = z.infer<typeof  createAddressSchema>
@@ -152,6 +182,7 @@ export type UserDetailIdSchema = z.infer<typeof userDetailIdSchema>
 
 
 const userModels = {
+    userIdSchema:userIdSchema,
     createAddressSchema: createAddressSchema, 
     addressResponseSchema: addressResponseSchema, 
     addressesResponseSchema: addressesResponseSchema, 
@@ -169,6 +200,9 @@ const userModels = {
     affLinksResponseSchema: affLinksResponseSchema, 
     userDetailSchema: userDetailSchema,
     msg: msg, 
+    userInfo: userInfo,
+    getLinksResponse: getLinksResponse,
+    getLinkResponse: getLinkResponse,
     cartReponsesSchema: cartReponsesSchema
 }
 

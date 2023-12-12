@@ -3,14 +3,18 @@ import { $ref } from "./user.schema";
 import {
     addCartItemHandler,
     createAddressHandler,
+    createAffiliateLinkHandler,
+    createContactHandler,
     decreCartItemQtyHandler,
     deleteAddressHandler,
     deleteCartItemHandler,
     deleteUserHandler,
     getAddressHandler,
+    getAffiliateLinkHandler,
     getCartItemHandler,
     getUserAddressesHandler,
     getUserCartHandler,
+    getUserContactHandler,
     getUserHandler,
     getUsersHandler,
     increCartItemQtyHandler,
@@ -26,7 +30,7 @@ async function userRoutes(server: FastifyInstance) {
             preHandler: [server.authenticate],
             schema: {
                 body: $ref("createAddressSchema"),
-                tags: ["user", "Address"],
+                tags: ["Address"],
                 description: "Add address info",
                 response: { 201: $ref("addressResponseSchema") },
             },
@@ -35,14 +39,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.put(
-        "/address",
+        "/address/:addressId",
         {
             preHandler: [server.authenticate],
             schema: {
-                body: $ref("updateSchema"),
-                tags: ["user", "Address"],
+                tags: ["Address"],
                 description: "Update a user address in {field:value} - format",
-                params: $ref("addressResponseSchema"),
+                params: $ref("addressIdSchema"),
                 response: { 200: $ref("addressResponseSchema") },
             },
         },
@@ -50,13 +53,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.delete(
-        "/address",
+        "/address/:addressId",
         {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("addressIdSchema"),
                 response: { 200: $ref("msg") },
-                tags: ["user", "Address"],
+                tags: ["Address"],
                 description: "Delete/remove address",
             },
         },
@@ -64,13 +67,12 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/address",
+        "/address/:addressId",
         {
-            preHandler: [server.authenticate],
             schema: {
                 params: $ref("addressIdSchema"),
                 response: { 200: $ref("addressResponseSchema") },
-                tags: ["user", "Address"],
+                tags: ["Address"],
                 description: "retrieve an address",
             },
         },
@@ -84,7 +86,7 @@ async function userRoutes(server: FastifyInstance) {
             schema: {
                 response: { 200: $ref("addressesResponseSchema") },
                 description: "return all user addresses",
-                tags: ["User", "address"],
+                tags: ["Address"],
             },
         },
         getUserAddressesHandler
@@ -102,19 +104,19 @@ async function userRoutes(server: FastifyInstance) {
                 description: "create a user contact record",
             },
         },
-        createAddressHandler
+        createContactHandler
     );
 
     server.put(
-        "/contact",
+        "/contact/:contactId",
         {
             preHandler: [server.authenticate],
+
             schema: {
-                body: $ref("updateSchema"),
                 params: $ref("contactIdSchema"),
                 response: { 200: $ref("contactResponseSchema") },
                 tags: ["User"],
-                description: "update user contact record",
+                description: "update user contact record using the {field:value} - body format",
             },
         },
         updateContactHandler
@@ -123,15 +125,15 @@ async function userRoutes(server: FastifyInstance) {
     server.get(
         "/contact",
         {
+
             preHandler: [server.authenticate],
             schema: {
-                params: $ref("contactIdSchema"),
                 response: { 200: $ref("contactResponseSchema") },
                 tags: ["User"],
                 description: "get user contact record",
             },
         },
-        updateContactHandler
+        getUserContactHandler
     );
 
     //  ================ CART =====================
@@ -142,7 +144,7 @@ async function userRoutes(server: FastifyInstance) {
             schema: {
                 body: $ref("createcartSchema"),
                 response: { 201: $ref("cartResponseSchema") },
-                tags: ["User", "Cart"],
+                tags: ["Cart"],
                 description: "add product/item to cart item",
             },
         },
@@ -150,13 +152,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/cart-item-incre",
+        "/cart/cart-item-incre/:cartId",
         {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("cartIdSchema"),
                 response: { 200: $ref("cartResponseSchema") },
-
+                tags: ["Cart"],
                 description: "increment the user cart item quantity value",
             },
         },
@@ -164,13 +166,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/cart-item-decre",
+        "/cart/cart-item-decre/:cartId",
         {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("cartIdSchema"),
                 response: { 200: $ref("cartResponseSchema") },
-                tags: ["User", "Cart"],
+                tags: ["Cart"],
                 description: "decrement the user cart item quantity value",
             },
         },
@@ -178,13 +180,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.delete(
-        "/cart",
+        "/cart/:cartId",
         {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("cartIdSchema"),
                 response: { 200: $ref("msg") },
-                tags: ["User", "Cart"],
+                tags: ["Cart"],
                 description: "remove an item from cart ",
             },
         },
@@ -192,13 +194,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/cart",
+        "/cart/:cartId",
         {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("cartIdSchema"),
                 response: { 200: $ref("cartResponseSchema") },
-                tags: ["User", "Cart"],
+                tags: ["Cart"],
                 description: "retrieve a specific  item from cart ",
             },
         },
@@ -210,8 +212,8 @@ async function userRoutes(server: FastifyInstance) {
         {
             preHandler: [server.authenticate],
             schema: {
-                response: { 200: $ref("cartResponseSchema") },
-                tags: ["User", "Cart"],
+                response: { 200: $ref("cartReponsesSchema") },
+                tags: ["Cart"],
                 description: "retrieve all user item from cart ",
 
             },
@@ -226,8 +228,8 @@ async function userRoutes(server: FastifyInstance) {
         {
             preHandler: [server.authenticate],
             schema: {
-                body: $ref("updateSchema"),
-                response: { 200: $ref("userDetailSchema") },
+                // body: $ref("updateSchema"),
+                response: { 200: $ref("userInfo") },
                 tags: ["User"],
                 description:
                     "update user fiel by - using a {field: value} as the body format ",
@@ -237,12 +239,13 @@ async function userRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/",
+        "/:userId",
         {
             preHandler: [server.authenticate],
             schema: {
+                params: $ref("userIdSchema"),
                 tags: ["User"],
-                description: "retrieve a specific (current) user",
+                description: "retrieve a specific user",
                 response: { 200: $ref("userDetailSchema") },
             },
         },
@@ -256,7 +259,7 @@ async function userRoutes(server: FastifyInstance) {
             schema: {
                 tags: ["User"],
                 description: "delete user account",
-                response: { 200: $ref("userDetailSchema") },
+                response: { 200: $ref("msg") },
             },
         },
         deleteUserHandler
@@ -268,12 +271,12 @@ async function userRoutes(server: FastifyInstance) {
         {
             preHandler: [server.authenticate, server.guard.scope("affiliate")],
             schema: {
-                tags: ["User"],
+                tags: ["Affiliate"],
                 description: "generate/copy affiliate link",
-                response: { 200: $ref("userDetailSchema") },
+                response: { 201: $ref("affLinkResponseSchema") },
             },
         },
-        getUserHandler
+        createAffiliateLinkHandler,
     );
 
     server.get(
@@ -281,12 +284,12 @@ async function userRoutes(server: FastifyInstance) {
         {
             preHandler: [server.authenticate, server.guard.scope("affiliate")],
             schema: {
-                tags: ["User"],
+                tags: ["Affiliate"],
                 description: "retrieve all affiliate links",
-                response: { 200: $ref("userDetailSchema") },
+                 response: { 200: $ref("getLinksResponse") },
             },
         },
-        getUserHandler
+        getAffiliateLinkHandler
     );
 
     // =================== ADMIN =========================
@@ -296,9 +299,9 @@ async function userRoutes(server: FastifyInstance) {
         {
             preHandler: [server.authenticate, server.guard.scope("admin")],
             schema: {
-                tags: ["admin", "User"],
+                tags: ["Admin"],
                 description: "return all user in the system ",
-                response: { 200: $ref("userDetailSchema") },
+                response: { 200: $ref("userDetailSchema") },  // #[attention]
             },
         },
         getUsersHandler

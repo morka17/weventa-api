@@ -7,40 +7,40 @@ import { UserIdParamInput } from "../authentication/authentication.schema";
 // Address
 export async function createAddressHandler(request: FastifyRequest<{
     Body: CreateAddressInput,
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const user = request.user as User
 
-    try{
-        const address = await createAddress({...request.body, ownerId: user.id})
+    try {
+        const address = await createAddress({ ...request.body, ownerId: user.id })
         return reply.code(201).send(address)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
 }
 
 export async function updateAddressHandler(request: FastifyRequest<{
-    Body: UpdateInput,
-    Params: AddressIdInput
-}>, reply: FastifyReply){
+    Params: AddressIdInput,
+    Body: Object,
+}>, reply: FastifyReply) {
 
-    const body = request.body as Object
+    const body = request.body
     const params = request.params
     const user = request.user as User
 
-    try{
-        const result = await findAddress({id: params.addressId})
-        if (result.length <= 0){
-            return reply.code(404).send({error: true, msg: "address not found"})
-        } 
-        if (user.id !== result[0].ownerId){
-            return reply.code(401).send({error: true, msg: "Unauthorized"})
+    try {
+        const result = await findAddress({ id: params.addressId })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "address not found" })
+        }
+        if (user.id !== result[0].ownerId) {
+            return reply.code(401).send({ error: true, msg: "Unauthorized" })
         }
 
-        const address = await updateAddress({id: params.addressId}, body)
+        const address = await updateAddress({ id: params.addressId }, body)
         return reply.code(200).send(address);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -49,38 +49,38 @@ export async function updateAddressHandler(request: FastifyRequest<{
 
 export async function deleteAddressHandler(request: FastifyRequest<{
     Params: AddressIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
-    const user = request.user as User 
-    try{
-        const result = await findAddress({id: params.addressId})
-        if(result.length <= 0){
-            return reply.code(404).send({error: true, msg:"address does not exist"})
+    const user = request.user as User
+    try {
+        const result = await findAddress({ id: params.addressId })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "address does not exist" })
         }
 
-        if (result[0].ownerId !== user.id){
-            return reply.code(403).send({error: true, msg:"Unauthorized"})
+        if (result[0].ownerId !== user.id) {
+            return reply.code(403).send({ error: true, msg: "Unauthorized" })
         }
         const res = await deleteAddressById(params.addressId)
-        return reply.code(200).send({error: false, msg: "Deleted successfully"})
-    }catch(e){
+        return reply.code(200).send({ error: false, msg: "Deleted successfully" })
+    } catch (e) {
         console.log(e)
-        return reply.code(500).send(e)
+        return reply.code(500).send({ error: true, msg: "Failed to delete" })
     }
 }
 
 
 export async function getAddressHandler(request: FastifyRequest<{
     Params: AddressIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
 
-    try{
-        const res = await findAddress({id: params.addressId})
-        return reply.code(200).send(res)
-    }catch(e){
+    try {
+        const res = await findAddress({ id: params.addressId })
+        return reply.code(200).send(res[0])
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -88,15 +88,15 @@ export async function getAddressHandler(request: FastifyRequest<{
 
 
 export async function getUserAddressesHandler(request: FastifyRequest<{
-    
-}>, reply: FastifyReply){
 
-    const user = request.user as User 
+}>, reply: FastifyReply) {
 
-    try{
-        const reviews = await findAddress({userId: user.id})
+    const user = request.user as User
+
+    try {
+        const reviews = await findAddress({ ownerId: user.id })
         return reply.code(200).send(reviews)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -107,14 +107,14 @@ export async function getUserAddressesHandler(request: FastifyRequest<{
 // ================== Contact controller ===================
 export async function createContactHandler(request: FastifyRequest<{
     Body: ContactsInput,
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const user = request.user as User
 
-    try{
-        const contact = await createContact({...request.body, ownerId: user.id})
+    try {
+        const contact = await createContact({ ...request.body, ownerId: user.id })
         return reply.code(201).send(contact)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -123,39 +123,39 @@ export async function createContactHandler(request: FastifyRequest<{
 export async function updateContactHandler(request: FastifyRequest<{
     Body: UpdateInput,
     Params: ContactsIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const body = request.body as Object
     const params = request.params
     const user = request.user as User
 
-    try{
-        const result = await findcontact({id: params.contactId})
-        if (result.length <= 0){
-            return reply.code(404).send({error: true, msg: "contact not found"})
-        } 
-        if (user.id !== result[0].ownerId){
-            return reply.code(401).send({error: true, msg: "Unauthorized"})
+    try {
+        const result = await findcontact({ id: params.contactId })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "contact not found" })
+        }
+        if (user.id !== result[0].ownerId) {
+            return reply.code(401).send({ error: true, msg: "Unauthorized" })
         }
 
-        const contact = await updatecontact({id: params.contactId}, body)
+        const contact = await updatecontact({ id: params.contactId }, body)
         return reply.code(200).send(contact);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
 }
 
 export async function getUserContactHandler(request: FastifyRequest<{
-    
-}>, reply: FastifyReply){
 
-    const user = request.user as User 
+}>, reply: FastifyReply) {
 
-    try{
-        const contact = await findcontact({userId: user.id})
-        return reply.code(200).send(contact)
-    }catch(e){
+    const user = request.user as User
+
+    try {
+        const contact = await findcontact({ ownerId: user.id })
+        return reply.code(200).send(contact[0])
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -165,36 +165,38 @@ export async function getUserContactHandler(request: FastifyRequest<{
 //  ======================  CART  ========================
 export async function addCartItemHandler(request: FastifyRequest<{
     Body: CreateCartIput,
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
+    const body = request.body
     const user = request.user as User
 
-    try{
-        const contact = await createCart({...request.body, ownerId: user.id, quantity: 1})
-        return reply.code(201).send(contact)
-    }catch(e){
-        console.log(e)
+    try {
+        const found = await findCart({ ownerId: user.id, productId: body.productId })
+        if (found.length !== 0) return found[0]
+        const cart = await createCart({ ...request.body, ownerId: user.id, quantity: 1 })
+        return reply.code(201).send(cart)
+    } catch (e) {
         return reply.code(500).send(e)
     }
 }
 
 export async function increCartItemQtyHandler(request: FastifyRequest<{
     Params: CartIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
     const user = request.user as User
 
-    try{
-        const result = await findCart({id: params.cartId, ownerId: user.id})
-        if (result.length <= 0){
-            return reply.code(404).send({error: true, msg: "item not found"})
+    try {
+        const result = await findCart({ id: params.cartId, ownerId: user.id })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "item not found" })
         }
 
-        const cart = await updateCart({id: params.cartId}, {quantity: result[0].quantity + 1})
+        const cart = await updateCart({ id: params.cartId }, { quantity: result[0].quantity + 1 })
 
         return reply.code(200).send(cart);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -202,25 +204,25 @@ export async function increCartItemQtyHandler(request: FastifyRequest<{
 
 export async function decreCartItemQtyHandler(request: FastifyRequest<{
     Params: CartIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
     const user = request.user as User
 
-    try{
-        const result = await findCart({id: params.cartId, ownerId: user.id})
-        if (result.length <= 0){
-            return reply.code(404).send({error: true, msg: "item not found"})
+    try {
+        const result = await findCart({ id: params.cartId, ownerId: user.id })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "item not found" })
         }
 
-        if (result[0].quantity <= 0){
-            return 
+        if (result[0].quantity <= 0) {
+            return
         }
 
-        const cart = await updateCart({id: params.cartId}, {quantity: result[0].quantity - 1})
+        const cart = await updateCart({ id: params.cartId }, { quantity: result[0].quantity - 1 })
 
         return reply.code(200).send(cart);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -228,17 +230,17 @@ export async function decreCartItemQtyHandler(request: FastifyRequest<{
 
 export async function deleteCartItemHandler(request: FastifyRequest<{
     Params: CartIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
     const user = request.user as User
 
-    try{
-        
+    try {
+
         const cart = await deleteCartById(user.id, params.cartId)
 
-        return reply.code(200).send({error: false, msg: "item removed successfully!"});
-    }catch(e){
+        return reply.code(200).send({ error: false, msg: "item removed successfully!" });
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -246,17 +248,16 @@ export async function deleteCartItemHandler(request: FastifyRequest<{
 
 export async function getCartItemHandler(request: FastifyRequest<{
     Params: CartIdInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
     const params = request.params
     const user = request.user as User
 
-    try{
-        
-        const cart = await findCart({ownerId: user.id, id: params.cartId})
+    try {
 
-        return reply.code(200).send(cart);
-    }catch(e){
+        const cart = await findCart({ ownerId: user.id, id: params.cartId })
+
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -264,15 +265,16 @@ export async function getCartItemHandler(request: FastifyRequest<{
 
 
 export async function getUserCartHandler(request: FastifyRequest<{
-    
-}>, reply: FastifyReply){
 
-    const user = request.user as User 
+}>, reply: FastifyReply) {
 
-    try{
-        const cartItems = await findCart({ownerId: user.id})
+    const user = request.user as User
+
+    try {
+        const cartItems = await findCart({ ownerId: user.id })
+
         return reply.code(200).send(cartItems)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -282,35 +284,35 @@ export async function getUserCartHandler(request: FastifyRequest<{
 //  ==================   USER =======================
 
 export async function updateUserHandler(request: FastifyRequest<{
-    Body: UpdateInput,
-}>, reply: FastifyReply){
+    Body: Object,
+}>, reply: FastifyReply) {
 
-    const body = request.body as Object
+    const body = request.body 
     const user = request.user as User
 
-    try{
-        const result = await findUser({id: user.id})
-        if (result.length <= 0){
-            return reply.code(404).send({error: true, msg: "user not found"})
-        } 
+    try {
+        const result = await findUser({ id: user.id })
+        if (result.length <= 0) {
+            return reply.code(404).send({ error: true, msg: "user not found" })
+        }
 
-        const updateduser = await updateUser({id: user.id}, body)
+        const updateduser = await updateUser({ id: user.id }, body)
         return reply.code(200).send(updateduser);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
 }
 
 export async function getUsersHandler(request: FastifyRequest<{
-    
-}>, reply: FastifyReply){
+
+}>, reply: FastifyReply) {
 
 
-    try{
+    try {
         const user = await findUser({})
         return reply.code(200).send(user)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -318,14 +320,14 @@ export async function getUsersHandler(request: FastifyRequest<{
 
 export async function getUserHandler(request: FastifyRequest<{
     Params: UserIdParamInput
-}>, reply: FastifyReply){
+}>, reply: FastifyReply) {
 
-    const params = request.params 
+    const params = request.params
 
-    try{
-        const result = await findUser({id: params.id})
+    try {
+        const result = await findUser({ id: params.id })
         return reply.code(200).send(result[0]);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -334,15 +336,15 @@ export async function getUserHandler(request: FastifyRequest<{
 
 
 export async function deleteUserHandler(request: FastifyRequest<{
-   
-}>, reply: FastifyReply){
+
+}>, reply: FastifyReply) {
 
     const user = request.user as User
 
-    try{
-        const res = await findUser({id: user.id})
+    try {
+        const res = await findUser({ id: user.id })
         return reply.code(200).send(res);
-    }catch(e){
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
@@ -352,31 +354,35 @@ export async function deleteUserHandler(request: FastifyRequest<{
 
 // ================  Affilate =================
 export async function createAffiliateLinkHandler(request: FastifyRequest<{
-   Body: CreateAffLinkInput,
-}>, reply: FastifyReply){
+    Body: CreateAffLinkInput,
+}>, reply: FastifyReply) {
     const user = request.user as User
 
-    try{
-        const link = await generateAffiliateLink({...request.body, userId: user.id})
-        return reply.code(200).send(link);
-    }catch(e){
+    try {
+        const found = await getAffiliateLinks({productId: request.body.productId, userId: user.id})
+        if (found.length > 0){
+            return  reply.code(201).send({ link: found[0].id });
+        }
+        const link = await generateAffiliateLink({ ...request.body, userId: user.id })
+        return reply.code(201).send({ link: link });
+    } catch (e) {
         console.log(e)
         return reply.code(500).send(e)
     }
 }
 
 export async function getAffiliateLinkHandler(request: FastifyRequest<{
-    
- }>, reply: FastifyReply){
-     const user = request.user as User
- 
-     try{
-         const links = await getAffiliateLinks(user.id)
-         return reply.code(200).send(links);
-     }catch(e){
-         console.log(e)
-         return reply.code(500).send(e)
-     }
- }
- 
+
+}>, reply: FastifyReply) {
+    const user = request.user as User
+
+    try {
+        const links = await getAffiliateLinks({userId: user.id})
+        return reply.code(200).send(links);
+    } catch (e) {
+        console.log(e)
+        return reply.code(500).send(e)
+    }
+}
+
 
