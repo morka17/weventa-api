@@ -10,6 +10,7 @@ const saleCore =  {
     earning: z.number(), 
     productId: z.number(), 
     buyerId: z.number(),
+    ownerId: z.number()
 }
 
 const createSaleSchema= z.object({
@@ -32,8 +33,34 @@ const saleIdSchema = z.object({
 
 const saleResponsesSchema = z.array(saleResponseSchema)
 
+// Payment 
+const paystackInitializeResponse = z.object({
+    status: z.boolean(), 
+    message: z.string(), 
+    data: z.object({authorization_url: z.string(), access_code: z.string(), reference: z.string()})
+})
+
+const orderResponse = z.object({
+    error: z.boolean(),
+    message: z.string(),
+    status: z.string(),
+    data: z.object({
+        payment_url: z.string(),
+    })
+})
+
+const orderSchema = z.object({
+    reference: z.string(),
+    amount: z.number(), 
+    status: z.string(),
+})
+
+
+export type OrderResponse = z.infer<typeof orderResponse> 
+export type CreateOrderInput = z.infer<typeof orderSchema>
 export type CreateSaleInput = z.infer<typeof createSaleSchema>
 export type SaleIdInput = z.infer<typeof saleIdSchema>
+export type PaystackInitializeResponse = z.infer<typeof paystackInitializeResponse>
 
 
 
@@ -42,6 +69,10 @@ const paymentModels = {
     saleResponseSchema, 
     saleResponsesSchema, 
     saleIdSchema, 
+    paystackInitializeResponse, 
+    orderSchema, 
+    orderResponse
+    
 }
 
 

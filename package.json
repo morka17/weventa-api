@@ -23,6 +23,7 @@
     "fastify-zod": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
     "natural": "^6.8.0",
+    "paystack": "^2.0.1",
     "zennv": "^0.1.1",
     "zenv": "^1.0.2",
     "zod": "^3.22.4",

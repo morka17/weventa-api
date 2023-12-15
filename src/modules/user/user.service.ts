@@ -151,10 +151,18 @@ export async function deleteCartById(userId: number, id: number,) {
 export async function findUser(query: any) {
     const users = await prisma.user.findMany({
         where: query,
-        include: {
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true, 
+            username: true, 
+            gender: true,
+            aboutme: true, 
+            photoURL: true, 
+            userType: true,
             contacts: true,
             addresses: true,
-        
         }, 
     })
 
@@ -200,17 +208,7 @@ export async function generateAffiliateLink(data: CreateAffLinkInput & { userId:
 }
 
 
-// TODO: MOVE TO THE PAYMENT FEATURE
-export async function trackAffiliatePurchase(linkId: number, productId: number, quantity: number): Promise<void> {
-    await prisma.affiliatePurchase.create({
-        data:
-        {
-            linkId,
-            productId,
-            quantity,
-        }
-    })
-}
+
 
 export async function getAffiliateLinks(query: any ) {
     const links = await prisma.affiliateLink.findMany({
