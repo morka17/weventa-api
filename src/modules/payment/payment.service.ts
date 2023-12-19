@@ -6,15 +6,21 @@ import prisma from "src/utils/prisma.util";
 export class AffiliatePurchaseService {
     constructor() { }
 
-    async trackAffiliatePurchase(linkId: number, productId: number, quantity: number): Promise<void> {
+    async trackAffiliatePurchase(linkId: number, ownerId: number, productId: number, quantity: number): Promise<void> {
         await prisma.affiliatePurchase.create({
             data:
             {
                 linkId,
+                ownerId,
                 productId,
                 quantity,
             }
         })
+    }
+
+
+    async getTrackAffiliatePurchase(query: any) {
+        return await prisma.affiliatePurchase.findMany({ where: query })
     }
 
 }
@@ -26,8 +32,8 @@ export class OrderService {
 
     };
 
-    async createOrder(data: CreateOrderInput) {
-        return await prisma.order.create({ data: data })
+    async createOrder(data: CreateOrderInput & {userId: number}) {
+        return await prisma.order.create({ data: data})
     }
 
     async getOrder(query: any) {

@@ -12,27 +12,29 @@ datasource db {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  firstName      String
-  lastName       String
-  email          String          @unique
-  username       String?
-  gender         String?
-  aboutme        String?
-  photoURL       String?
-  verified       Boolean         @default(false)
-  userType       String
-  password       String
-  salt           String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @default(now())
-  addresses      Address[]
-  products       Product[]
-  contacts       Contact[]
-  reviews        Review[]
-  affiliateLinks AffiliateLink[]
-  sales          Sale[]
-  carts          Cart[]
+  id                Int                 @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String              @unique
+  username          String?
+  gender            String?
+  aboutme           String?
+  photoURL          String?
+  verified          Boolean             @default(false)
+  userType          String
+  password          String
+  salt              String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now())
+  addresses         Address[]
+  products          Product[]
+  contacts          Contact[]
+  reviews           Review[]
+  affiliateLinks    AffiliateLink[]
+  sales             Sale[]
+  carts             Cart[]
+  AffiliatePurchase AffiliatePurchase[]
+  Order             Order[]
 }
 
 model Product {
@@ -131,6 +133,8 @@ model AffiliateLink {
 
 model AffiliatePurchase {
   id        Int           @id @default(autoincrement())
+  ownerId   Int
+  user      User          @relation(fields: [ownerId], references: [id])
   linkId    Int
   link      AffiliateLink @relation(fields: [linkId], references: [id])
   productId Int
@@ -140,10 +144,12 @@ model AffiliatePurchase {
 }
 
 model Order {
-  id Int @id @default(autoincrement())
-  reference String 
-  amount Int 
-  status String 
+  id        Int      @id @default(autoincrement())
+  userId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  reference String
+  amount    Int
+  status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -145,6 +145,14 @@ export async function deleteCartById(userId: number, id: number,) {
     return res
 }
 
+export async function deleteCartByUserId(userId: number) {
+    const res = await prisma.cart.deleteMany({
+        where: { ownerId: userId }
+    })
+
+    return res
+}
+
 // ====================  User ====================================
 
 
